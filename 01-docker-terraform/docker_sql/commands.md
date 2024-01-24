@@ -115,3 +115,23 @@ Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 ModuleNotFoundError: No module named 'pandas'
 ```
+
+Despues de generar el Dockerfile con python 3.9 y dentro de la carpeta
+```
+~/dtc-dez/01-docker-terraform/docker_sql$ docker build -t test:pandas .
+[+] Building 29.7s (6/6) FINISHED                                                                     docker:default
+ => [internal] load .dockerignore                                                                               0.3s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load build definition from Dockerfile                                                            0.2s
+ => => transferring dockerfile: 97B                                                                             0.0s
+ => [internal] load metadata for docker.io/library/python:3.9                                                   0.0s
+ => [1/2] FROM docker.io/library/python:3.9                                                                     0.3s
+ => [2/2] RUN pip install pandas                                                                               25.8s
+ => exporting to image                                                                                          2.9s 
+ => => exporting layers                                                                                         2.9s 
+ => => writing image sha256:d0d0ada8980a97f3df980ebb560e243d624631882a02bca016d104300837ea32                    0.0s 
+ => => naming to docker.io/library/test:pandas                                                                  0.0s 
+                                                                                                                     
+What's Next?                                                                                                         
+  View a summary of image vulnerabilities and recommendations → docker scout quickview
+```
