@@ -195,3 +195,47 @@ please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
 >>> pandas.__version__
 '2.2.0'
 ```
+
+Despues de generar el archivo pipeline.py
+```
+~/dtc-dez/01-docker-terraform/docker_sql$ docker build -t test:pandas .
+[+] Building 3.0s (10/10) FINISHED                                                                    docker:default
+ => [internal] load build definition from Dockerfile                                                            0.1s
+ => => transferring dockerfile: 142B                                                                            0.0s
+ => [internal] load .dockerignore                                                                               0.1s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/python:3.9.1                                                 2.2s
+ => [auth] library/python:pull token for registry-1.docker.io                                                   0.0s
+ => [1/4] FROM docker.io/library/python:3.9.1@sha256:ca8bd3c91af8b12c2d042ade99f7c8f578a9f80a0dbbd12ed261eeba9  0.0s
+ => [internal] load build context                                                                               0.1s
+ => => transferring context: 125B                                                                               0.0s
+ => CACHED [2/4] RUN pip install pandas                                                                         0.0s
+ => [3/4] WORKDIR /app                                                                                          0.1s
+ => [4/4] COPY pipeline.py pipeline.py                                                                          0.1s
+ => exporting to image                                                                                          0.2s
+ => => exporting layers                                                                                         0.1s
+ => => writing image sha256:d45b88f0bbe44e0a68e7c6a23037b8a28db265c591b1e8edb62983f3878d153d                    0.0s
+ => => naming to docker.io/library/test:pandas                                                                  0.0s
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview
+```
+
+```
+~/dtc-dez/01-docker-terraform/docker_sql$ docker run -it test:pandas
+root@6950c32a0a16:/app# ls
+pipeline.py
+root@6950c32a0a16:/app# pwd
+/app
+root@6950c32a0a16:/app# python pipeline.py 
+/app/pipeline.py:1: DeprecationWarning: 
+Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
+(to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
+but was not found to be installed on your system.
+If this would cause problems for you,
+please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
+        
+  import pandas as pd
+job finished successfully
+root@6950c32a0a16:/app# exit
+```
