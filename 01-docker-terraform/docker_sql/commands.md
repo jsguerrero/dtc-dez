@@ -135,3 +135,63 @@ Despues de generar el Dockerfile con python 3.9 y dentro de la carpeta
 What's Next?                                                                                                         
   View a summary of image vulnerabilities and recommendations → docker scout quickview
 ```
+
+Despues de generar el Dockerfile con python 3.9.1 y dentro de la carpeta
+```
+~/dtc-dez/01-docker-terraform/docker_sql$ docker build -t test:pandas .
+[+] Building 136.5s (7/7) FINISHED                                                                    docker:default
+ => [internal] load .dockerignore                                                                               0.2s
+ => => transferring context: 2B                                                                                 0.0s
+ => [internal] load build definition from Dockerfile                                                            0.3s
+ => => transferring dockerfile: 99B                                                                             0.0s
+ => [internal] load metadata for docker.io/library/python:3.9.1                                                 3.8s
+ => [auth] library/python:pull token for registry-1.docker.io                                                   0.0s
+ => [1/2] FROM docker.io/library/python:3.9.1@sha256:ca8bd3c91af8b12c2d042ade99f7c8f578a9f80a0dbbd12ed261eeba  91.0s
+ => => resolve docker.io/library/python:3.9.1@sha256:ca8bd3c91af8b12c2d042ade99f7c8f578a9f80a0dbbd12ed261eeba9  0.3s
+ => => sha256:ca8bd3c91af8b12c2d042ade99f7c8f578a9f80a0dbbd12ed261eeba96dd632f 2.36kB / 2.36kB                  0.0s
+ => => sha256:2a7e1b9e632b7a3a967dbddbf8c80fff234f10f9cb647b253c6405252db41c9c 2.22kB / 2.22kB                  0.0s
+ => => sha256:2a93c239d591553ed9c25ef20ed7c7a1542e8644f57d352e3a1446f0a5f0412d 8.33kB / 8.33kB                  0.0s
+ => => sha256:7467d1831b6947c294d92ee957902c3cd448b17c5ac2103ca5e79d15afb317c3 7.83MB / 7.83MB                  5.8s
+ => => sha256:feab2c490a3cea21cc051ff29c33cc9857418edfa1be9966124b18abe1d5ae16 10.00MB / 10.00MB                6.9s
+ => => sha256:0ecb575e629cd60aa802266a3bc6847dcf4073aa2a6d7d43f717dd61e7b90e0b 50.40MB / 50.40MB               26.8s
+ => => sha256:f15a0f46f8c38f4ca7daecf160ba9cdb3ddeafda769e2741e179851cfaa14eec 51.83MB / 51.83MB               28.4s
+ => => sha256:937782447ff61abe49fd83ca9e3bdea338c1ae1d53278b2f31eca18ab4366a1e 192.33MB / 192.33MB             62.3s
+ => => extracting sha256:0ecb575e629cd60aa802266a3bc6847dcf4073aa2a6d7d43f717dd61e7b90e0b                      11.4s
+ => => sha256:e78b7aaaab2cfb7598d50ad36633611a75bff6116d6a0acc2d37df61b5c797be 6.15MB / 6.15MB                 29.4s
+ => => sha256:06c4d8634a1a306e07412154f682d30988cee9a788c10563e0143279d23fa69b 19.12MB / 19.12MB               37.2s
+ => => sha256:42b6aa65d161c7afc7d1b5741224751f55ea238144036e416037b02e22d73dff 231B / 231B                     30.1s
+ => => sha256:f7fc0748308d6904bfdd5e91721ba058abdd1a415247a65089b44392f4be9fc9 2.16MB / 2.16MB                 32.7s
+ => => extracting sha256:7467d1831b6947c294d92ee957902c3cd448b17c5ac2103ca5e79d15afb317c3                       1.3s
+ => => extracting sha256:feab2c490a3cea21cc051ff29c33cc9857418edfa1be9966124b18abe1d5ae16                       1.0s
+ => => extracting sha256:f15a0f46f8c38f4ca7daecf160ba9cdb3ddeafda769e2741e179851cfaa14eec                      11.0s
+ => => extracting sha256:937782447ff61abe49fd83ca9e3bdea338c1ae1d53278b2f31eca18ab4366a1e                      21.4s
+ => => extracting sha256:e78b7aaaab2cfb7598d50ad36633611a75bff6116d6a0acc2d37df61b5c797be                       1.0s
+ => => extracting sha256:06c4d8634a1a306e07412154f682d30988cee9a788c10563e0143279d23fa69b                       2.2s
+ => => extracting sha256:42b6aa65d161c7afc7d1b5741224751f55ea238144036e416037b02e22d73dff                       0.0s
+ => => extracting sha256:f7fc0748308d6904bfdd5e91721ba058abdd1a415247a65089b44392f4be9fc9                       0.8s
+ => [2/2] RUN pip install pandas                                                                               36.3s
+ => exporting to image                                                                                          4.8s
+ => => exporting layers                                                                                         4.7s
+ => => writing image sha256:46ea48c04e265c521b4018821c528c37719bdc64d49cd5df9a6988295d3eb590                    0.0s
+ => => naming to docker.io/library/test:pandas                                                                  0.1s
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview
+```
+```
+~/dtc-dez/01-docker-terraform/docker_sql$ docker run -it test:pandas
+root@6ca0af2b0e70:/# python
+Python 3.9.1 (default, Feb  9 2021, 07:42:03) 
+[GCC 8.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import pandas
+<stdin>:1: DeprecationWarning: 
+Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
+(to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
+but was not found to be installed on your system.
+If this would cause problems for you,
+please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
+        
+>>> pandas.__version__
+'2.2.0'
+```
