@@ -697,3 +697,13 @@ Traceback (most recent call last):
   File "parsers.pyx", line 863, in pandas._libs.parsers.TextReader.read_low_memory
 StopIteration
 ```
+
+<h2>Video 1.2.5</h2>
+
+```
+jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ docker-compose up -d
+[+] Running 3/3
+ ✔ Network docker_sql_default         Created                                                                                                        0.0s 
+ ✔ Container docker_sql-pgadmin-1     Started                                                                                                        0.2s 
+ ✔ Container docker_sql-pgdatabase-1  Started                                                                                                        0.1s 
+```
