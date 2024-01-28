@@ -603,3 +603,97 @@ postfix/postfix-script: starting the Postfix mail system
 [2024-01-28 05:23:04 +0000] [1] [INFO] Using worker: gthread
 [2024-01-28 05:23:04 +0000] [117] [INFO] Booting worker with pid: 117
 ```
+
+<h2>Video 1.2.4 Dockerizing the Ingestion Script</h2>
+
+```
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ jupyter nbconvert --to=script upload_data.ipynb
+[NbConvertApp] Converting notebook upload_data.ipynb to script
+[NbConvertApp] Writing 1545 bytes to upload_data.py
+```
+
+Aplicados los cambios en el archivo ingest_data.py
+
+```
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
+
+python ingest_data.py \
+  --user=root \
+  --password=root \
+  --host=localhost \
+  --port=5432 \
+  --db=ny_taxi \
+  --table_name=yelloy_taxi_trips \
+  --url=${URL}
+```
+
+Dockerizando la ingesta
+
+```
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ docker build -t taxi_ingest:v001 .
+[+] Building 45.8s (11/11) FINISHED                                                                                                        docker:default
+ => [internal] load build definition from Dockerfile                                                                                                 0.1s
+ => => transferring dockerfile: 215B                                                                                                                 0.0s
+ => [internal] load .dockerignore                                                                                                                    0.1s
+ => => transferring context: 2B                                                                                                                      0.0s
+ => [internal] load metadata for docker.io/library/python:3.9.1                                                                                      1.4s
+ => [auth] library/python:pull token for registry-1.docker.io                                                                                        0.0s
+ => CACHED [1/5] FROM docker.io/library/python:3.9.1@sha256:ca8bd3c91af8b12c2d042ade99f7c8f578a9f80a0dbbd12ed261eeba96dd632f                         0.0s
+ => [internal] load build context                                                                                                                    0.0s
+ => => transferring context: 1.98kB                                                                                                                  0.0s
+ => [2/5] RUN apt-get install wget                                                                                                                   0.6s
+ => [3/5] RUN pip install pandas sqlalchemy psycopg2                                                                                                40.7s
+ => [4/5] WORKDIR /app                                                                                                                               0.1s 
+ => [5/5] COPY ingest_data.py ingest_data.py                                                                                                         0.1s 
+ => exporting to image                                                                                                                               2.6s 
+ => => exporting layers                                                                                                                              2.6s 
+ => => writing image sha256:ae93e626cc13c4539f01b2581c9a62ccb7fcd7a65b93c02e9e285980b4721f0e                                                         0.0s 
+ => => naming to docker.io/library/taxi_ingest:v001                                                                                                  0.0s 
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview
+```
+
+```
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ docker run -it   --network=pg-network   taxi_ingest:v001     --user=root     --password=root     --host=pg-database     --port=5432     --db=ny_taxi     --table_name=yelloy_taxi_trips     --url=${URL}
+.
+.
+.
+Saving to: ‘output.csv.gz’
+
+output.csv.gz                          100%[==========================================================================>]  23.87M  14.1MB/s    in 1.7s    
+
+2024-01-28 06:37:14 (14.1 MB/s) - ‘output.csv.gz’ saved [25031880/25031880]
+
+inserted another chunk, took 29.066 second
+inserted another chunk, took 15.214 second
+inserted another chunk, took 15.149 second
+inserted another chunk, took 25.044 second
+inserted another chunk, took 23.237 second
+inserted another chunk, took 13.206 second
+inserted another chunk, took 15.651 second
+inserted another chunk, took 12.823 second
+inserted another chunk, took 12.507 second
+inserted another chunk, took 13.289 second
+inserted another chunk, took 12.642 second
+/app/ingest_data.py:42: DtypeWarning: Columns (6) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = next(df_iter)
+inserted another chunk, took 12.514 second
+inserted another chunk, took 8.074 second
+Traceback (most recent call last):
+  File "/app/ingest_data.py", line 66, in <module>
+    main(args)
+  File "/app/ingest_data.py", line 42, in main
+    df = next(df_iter)
+  File "/usr/local/lib/python3.9/site-packages/pandas/io/parsers/readers.py", line 1841, in __next__
+    return self.get_chunk()
+  File "/usr/local/lib/python3.9/site-packages/pandas/io/parsers/readers.py", line 1983, in get_chunk
+    return self.read(nrows=size)
+  File "/usr/local/lib/python3.9/site-packages/pandas/io/parsers/readers.py", line 1921, in read
+    ) = self._engine.read(  # type: ignore[attr-defined]
+  File "/usr/local/lib/python3.9/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 234, in read
+    chunks = self._reader.read_low_memory(nrows)
+  File "parsers.pyx", line 863, in pandas._libs.parsers.TextReader.read_low_memory
+StopIteration
+```
