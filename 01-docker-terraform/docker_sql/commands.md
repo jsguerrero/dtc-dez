@@ -1,4 +1,4 @@
-<h1>Introduction to Docker</h1>
+<h1>Introduction to Docker - 1.2.1</h1>
 
 ```
 $ docker run hello-world
@@ -293,7 +293,7 @@ please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
 job finished successfully for day = 2024-01-23
 ```
 
-<h1>Ingesting NY Taxi Data to Postgres</h1>
+<h1>Ingesting NY Taxi Data to Postgres - 1.2.2</h1>
 
 ```
 ~/dtc-dez/01-docker-terraform$ docker run -it \
@@ -525,7 +525,7 @@ Time: 0.132s
 root@localhost:ny_taxi>
 ```
 
-<h2> Video 1.2.3 </h2>
+<h1> Connecting pgAdmin and Postgres - 1.2.3 </h1>
 
 ```
 root@localhost:ny_taxi> SELECT MAX(tpep_pickup_datetime), MIN(tpep_pickup_datetime), MAX(total_amount) FROM yellow_taxi_data;
@@ -604,7 +604,7 @@ postfix/postfix-script: starting the Postfix mail system
 [2024-01-28 05:23:04 +0000] [117] [INFO] Booting worker with pid: 117
 ```
 
-<h2>Video 1.2.4 Dockerizing the Ingestion Script</h2>
+<h1>Putting the ingestion script into Docker - 1.2.4</h1>
 
 ```
 (dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ jupyter nbconvert --to=script upload_data.ipynb
@@ -698,7 +698,7 @@ Traceback (most recent call last):
 StopIteration
 ```
 
-<h2>Video 1.2.5</h2>
+<h1>Running Postgres and pgAdmin with Docker-Compose - 1.2.5</h1>
 
 ```
 jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ docker-compose up -d
@@ -706,4 +706,71 @@ jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform/docker_sql$ docker-compo
  ✔ Network docker_sql_default         Created                                                                                                        0.0s 
  ✔ Container docker_sql-pgadmin-1     Started                                                                                                        0.2s 
  ✔ Container docker_sql-pgdatabase-1  Started                                                                                                        0.1s 
+```
+
+<h1>SQL refresher - 1.2.6</h1>
+
+SQL ejecutado dentro de la interfaz de pgadmin
+
+```
+SELECT
+	tpep_pickup_datetime,
+	tpep_dropoff_datetime,
+	total_amount,
+	CONCAT(zpu."Borough", ' / ', zpu."Zone") AS "pick_up_loc",
+	CONCAT(zdo."Borough", ' / ', zdo."Zone") AS "dropoff_loc"
+FROM 		yelloy_taxi_trips	t
+INNER JOIN 	zones 				zpu
+	ON t."PULocationID" = zpu."LocationID"
+INNER JOIN 	zones 				zdo
+	ON t."DOLocationID" = zdo."LocationID"
+LIMIT 100;
+```
+
+```
+SELECT
+	tpep_pickup_datetime,
+	tpep_dropoff_datetime,
+	total_amount,
+	"PULocationID",
+	"DOLocationID"
+FROM yelloy_taxi_trips t
+WHERE
+	"PULocationID" NOT IN (SELECT "LocationID" FROM zones)
+	OR
+	"DOLocationID" NOT IN (SELECT "LocationID" FROM zones)
+LIMIT 100;
+```
+
+```
+DELETE FROM zones WHERE "LocationID" = 142
+
+SELECT
+	tpep_pickup_datetime,
+	tpep_dropoff_datetime,
+	total_amount,
+	CONCAT(zpu."Borough", ' / ', zpu."Zone") AS "pick_up_loc",
+	CONCAT(zdo."Borough", ' / ', zdo."Zone") AS "dropoff_loc"
+FROM 		yelloy_taxi_trips	t
+LEFT JOIN 	zones 				zpu
+	ON t."PULocationID" = zpu."LocationID"
+LEFT JOIN 	zones 				zdo
+	ON t."DOLocationID" = zdo."LocationID"
+LIMIT 100;
+```
+
+```
+SELECT
+	CAST(tpep_pickup_datetime AS DATE) AS "day",
+	"DOLocationID",
+	COUNT(1) AS "count",
+	MAX(total_amount),
+	MAX(passenger_count)
+FROM
+	yelloy_taxi_trips t
+GROUP BY
+	1, 2
+ORDER BY
+	"day" ASC,
+	"DOLocationID" ASC;
 ```
