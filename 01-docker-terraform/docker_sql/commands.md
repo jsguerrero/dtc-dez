@@ -524,3 +524,82 @@ SELECT 1
 Time: 0.132s
 root@localhost:ny_taxi>
 ```
+
+<h2> Video 1.2.3 </h2>
+
+```
+root@localhost:ny_taxi> SELECT MAX(tpep_pickup_datetime), MIN(tpep_pickup_datetime), MAX(total_amount) FROM yellow_taxi_data;
++---------------------+---------------------+---------+
+| max                 | min                 | max     |
+|---------------------+---------------------+---------|
+| 2021-02-22 16:52:16 | 2008-12-31 23:05:14 | 7661.28 |
++---------------------+---------------------+---------+
+SELECT 1
+Time: 0.569s
+```
+
+```
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez$ docker run -it \
+>   -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+>   -e PGADMIN_DEFAULT_PASSWORD="root" \
+>   -p 8080:80 \
+> dpage/pgadmin4
+Unable to find image 'dpage/pgadmin4:latest' locally
+latest: Pulling from dpage/pgadmin4
+.
+.
+.
+pgAdmin 4 - Application Initialisation
+======================================
+
+postfix/postfix-script: starting the Postfix mail system
+[2024-01-28 05:13:41 +0000] [1] [INFO] Starting gunicorn 20.1.0
+[2024-01-28 05:13:41 +0000] [1] [INFO] Listening at: http://[::]:80 (1)
+[2024-01-28 05:13:41 +0000] [1] [INFO] Using worker: gthread
+[2024-01-28 05:13:41 +0000] [118] [INFO] Booting worker with pid: 118
+```
+
+```
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform$ docker network create pg-network
+```
+
+```
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform$ docker run -it \
+>   -e POSTGRES_USER="root" \
+>   -e POSTGRES_PASSWORD="root" \
+>   -e POSTGRES_DB="ny_taxi" \
+>   -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data:rw \
+>   -p 5432:5432 \
+>   --network=pg-network \
+>   --name=pg-database \
+> postgres:13
+
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+2024-01-28 05:19:25.298 UTC [1] LOG:  starting PostgreSQL 13.13 (Debian 13.13-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-01-28 05:19:25.302 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-01-28 05:19:25.302 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2024-01-28 05:19:25.310 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2024-01-28 05:19:25.320 UTC [27] LOG:  database system was shut down at 2024-01-28 05:19:03 UTC
+2024-01-28 05:19:25.339 UTC [1] LOG:  database system is ready to accept connections
+```
+
+```
+(dtc_dez) jguerrero@DESKTOP-FVK443T:~/dtc-dez/01-docker-terraform$ docker run -it \
+>   -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+>   -e PGADMIN_DEFAULT_PASSWORD="root" \
+>   -p 8080:80 \
+>   --network=pg-network \
+>   --name=pgadmin \
+> dpage/pgadmin4
+NOTE: Configuring authentication for SERVER mode.
+
+pgAdmin 4 - Application Initialisation
+======================================
+
+postfix/postfix-script: starting the Postfix mail system
+[2024-01-28 05:23:04 +0000] [1] [INFO] Starting gunicorn 20.1.0
+[2024-01-28 05:23:04 +0000] [1] [INFO] Listening at: http://[::]:80 (1)
+[2024-01-28 05:23:04 +0000] [1] [INFO] Using worker: gthread
+[2024-01-28 05:23:04 +0000] [117] [INFO] Booting worker with pid: 117
+```
